@@ -1,8 +1,19 @@
 {
   "name": "vscode-go-work-manager",
   "displayName": "go.work manager",
-  "description": "your go workspace manager",
+  "description": "manage your go workspace",
   "version": "0.0.1",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dashengyeah/vscode-go-work-manager"
+  },
+  "publisher": "dashengyeah",
+  "homepage": "https://github.com/dashengyeah/vscode-go-work-manager",
+  "bugs": {
+    "url": "https://github.com/dashengyeah/vscode-go-work-manager/issues",
+    "email": "dashengyeah@hotmail.com"
+  },
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -71,16 +82,17 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.71.0",
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "16.x",
+    "@types/vscode": "^1.71.0",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
+    "@vscode/test-electron": "^2.1.5",
+    "esbuild": "^0.15.7",
     "eslint": "^8.20.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
-    "typescript": "^4.7.4",
-    "@vscode/test-electron": "^2.1.5"
+    "typescript": "^4.7.4"
   }
 }
