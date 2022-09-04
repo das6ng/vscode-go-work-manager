@@ -1,7 +1,7 @@
 {
   "name": "vscode-go-work-manager",
-  "displayName": "vscode-go-work-manager",
-  "description": "go.work manager",
+  "displayName": "go.work manager",
+  "description": "your go workspace manager",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.71.0"
@@ -10,16 +10,57 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-go-work-manager.helloWorld"
+    "onStartupFinished"
+  ],
+  "keywords": [
+    "gowork",
+    "go.work"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "vscode-go-work-manager.helloWorld",
-        "title": "Hello World"
+        "command": "vscode-go-work-manager.hello",
+        "title": "Hello go.work"
+      },
+      {
+        "command": "vscode-go-work-manager.toggleItem",
+        "title": "Toggle",
+        "icon": {
+          "light": "media/toggle.svg",
+          "dark": "media/toggle.svg"
+        }
+      },
+      {
+        "command": "vscode-go-work-manager.testReload",
+        "title": "Test Reload"
+      },
+      {
+        "command": "vscode-go-work-manager.testAdd",
+        "title": "Test Add"
+      },
+      {
+        "command": "vscode-go-work-manager.testDrop",
+        "title": "Test Drop"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "goWorkManager",
+          "name": "Go Work"
+        }
+      ]
+    },
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "vscode-go-work-manager.toggleItem",
+          "when": "view == goWorkManager && viewItem == goModItem",
+          "group": "inline"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

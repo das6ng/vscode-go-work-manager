@@ -1,26 +1,87 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { Bridge } from './bridge';
+import { GoWorkItem, GoWorkProvider } from './provider';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const cacheBridgeKey = "workman-bridge";
+
 export function activate(context: vscode.ExtensionContext) {
-	
+
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-go-work-manager" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('vscode-go-work-manager.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from vscode-go-work-manager!');
-	});
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.hello', () => {
+		vscode.window.showInformationMessage('Hello from vscode-go-work-manager!');
+	}));
 
-	context.subscriptions.push(disposable);
+	// build our workman command bridge.
+	const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
+		? vscode.workspace.workspaceFolders[0].uri.fsPath : ".";
+	let bridge = new Bridge(rootPath);
+	bridge.reload();
+	context.globalState.update(cacheBridgeKey, bridge);
+	let provider = new GoWorkProvider(bridge);
+
+	vscode.window.registerTreeDataProvider(
+		'goWorkManager',
+		provider
+	);
+
+
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.testReload', () => {
+		let ret = bridge.reload();
+		vscode.window.showInformationMessage(JSON.stringify(ret));
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.toggleItem', (item: GoWorkItem) => {
+		let ret = bridge.toggle(item.name) ?? "OK";
+		vscode.window.showInformationMessage(ret);
+		bridge.reload();
+		provider.refresh();
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.testAdd', async () => {
+		const info = bridge.getInfo();
+		const result = await vscode.window.showInputBox({
+			value: '',
+			placeHolder: `add module to '${info.path}'`,
+		});
+		let ok = true;
+		info._raw.used.forEach(v => {
+			if (v === result) {
+				vscode.window.showWarningMessage(`Already in use: ${result}`);
+				ok = false;
+			}
+		});
+		if (!ok || result === undefined) {
+			return;
+		}
+		if (!bridge.update(info._raw.used.concat([result]))) {
+			vscode.window.showWarningMessage(`Add failed: ${result}`);
+		}
+		vscode.window.showInformationMessage(`Add: ${result}`);
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.testDrop', async () => {
+		const info = bridge.getInfo();
+		const result = await vscode.window.showInputBox({
+			value: '',
+			placeHolder: `drop module from '${bridge.getInfo().path}'`,
+		});
+		let ok = false;
+		let to: string[] = [];
+		info._raw.used.forEach(v => {
+			if (v === result) {
+				ok = true;
+				return;
+			}
+			to.push(v);
+		});
+		if (!ok || result === undefined) {
+			return;
+		}
+		if (!bridge.update(to)) {
+			vscode.window.showWarningMessage(`Drop failed: ${result}`);
+		}
+		vscode.window.showInformationMessage(`Drop: ${result}`);
+	}));
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
