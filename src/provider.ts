@@ -33,19 +33,24 @@ export class GoWorkItem extends vscode.TreeItem {
     constructor(
         public name: string,
         public used: boolean,
-        public readonly command?: vscode.Command,
         public readonly importPath?: string,
+        public readonly command?: vscode.Command,
     ) {
         super(name);
         this.tooltip = importPath;
-        this.description = `${name}: ${importPath}`;
+        this.description = `${importPath ?? ""}`;
         this.iconPath = used ? this.iconUsed : this.iconUnused;
     }
 
-    iconUsed = path.join(__filename, '..', '..', 'media', 'mod_check.svg');
-    iconUnused = path.join(__filename, '..', '..', 'media', 'mod_x.svg');
-
-    iconPath = '';
+    iconUsed = {
+        light: path.join(__filename, '..', '..', 'media', 'light', 'mod_check.svg'),
+        dark: path.join(__filename, '..', '..', 'media', 'dark', 'mod_check.svg')
+    };
+    iconUnused = {
+        light: path.join(__filename, '..', '..', 'media', 'light', 'mod_x.svg'),
+        dark: path.join(__filename, '..', '..', 'media', 'dark', 'mod_x.svg')
+    };
+    iconPath = this.iconUsed;
 
     contextValue = 'goModItem';
     collapsibleState = vscode.TreeItemCollapsibleState.None;

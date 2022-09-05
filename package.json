@@ -32,27 +32,36 @@
     "commands": [
       {
         "command": "vscode-go-work-manager.hello",
-        "title": "Hello go.work"
+        "title": "Hello go.work",
+        "category": "Go Work"
+      },
+      {
+        "command": "vscode-go-work-manager.addUse",
+        "title": "add use manually",
+        "category": "Go Work"
+      },
+      {
+        "command": "vscode-go-work-manager.dropUse",
+        "title": "drop use manually",
+        "category": "Go Work"
       },
       {
         "command": "vscode-go-work-manager.toggleItem",
-        "title": "Toggle",
+        "title": "toggle use or drop",
+        "category": "Go Work",
         "icon": {
-          "light": "media/toggle.svg",
-          "dark": "media/toggle.svg"
+          "light": "media/light/toggle.svg",
+          "dark": "media/dark/toggle.svg"
         }
       },
       {
-        "command": "vscode-go-work-manager.testReload",
-        "title": "Test Reload"
-      },
-      {
-        "command": "vscode-go-work-manager.testAdd",
-        "title": "Test Add"
-      },
-      {
-        "command": "vscode-go-work-manager.testDrop",
-        "title": "Test Drop"
+        "command": "vscode-go-work-manager.refresh",
+        "title": "refresh status",
+        "category": "Go Work",
+        "icon": {
+          "light": "media/light/refresh.svg",
+          "dark": "media/dark/refresh.svg"
+        }
       }
     ],
     "views": {
@@ -69,6 +78,21 @@
           "command": "vscode-go-work-manager.toggleItem",
           "when": "view == goWorkManager && viewItem == goModItem",
           "group": "inline"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "vscode-go-work-manager.refresh",
+          "when": "view == goWorkManager",
+          "group": "navigation"
+        },
+        {
+          "command": "vscode-go-work-manager.addUse",
+          "when": "view == goWorkManager"
+        },
+        {
+          "command": "vscode-go-work-manager.dropUse",
+          "when": "view == goWorkManager"
         }
       ]
     }

@@ -28,21 +28,21 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 
 
-	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.testReload', () => {
-		let ret = bridge.reload();
-		vscode.window.showInformationMessage(JSON.stringify(ret));
-	}));
 	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.toggleItem', (item: GoWorkItem) => {
-		let ret = bridge.toggle(item.name) ?? "OK";
+		let ret = bridge.toggle(item.name) ?? `go.work: toggle ${item.name}`;
 		vscode.window.showInformationMessage(ret);
 		bridge.reload();
 		provider.refresh();
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.testAdd', async () => {
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.refresh', () => {
+		bridge.reload();
+		provider.refresh();
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.addUse', async () => {
 		const info = bridge.getInfo();
 		const result = await vscode.window.showInputBox({
 			value: '',
-			placeHolder: `add module to '${info.path}'`,
+			placeHolder: `add use module to '${info.path}'`,
 		});
 		let ok = true;
 		info._raw.used.forEach(v => {
@@ -59,11 +59,11 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		vscode.window.showInformationMessage(`Add: ${result}`);
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.testDrop', async () => {
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.dropUse', async () => {
 		const info = bridge.getInfo();
 		const result = await vscode.window.showInputBox({
 			value: '',
-			placeHolder: `drop module from '${bridge.getInfo().path}'`,
+			placeHolder: `drop use module from '${bridge.getInfo().path}'`,
 		});
 		let ok = false;
 		let to: string[] = [];
