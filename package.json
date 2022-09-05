@@ -2,7 +2,7 @@
   "name": "vscode-go-work-manager",
   "displayName": "go.work manager",
   "description": "manage your go workspace",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "SEE LICENSE IN LICENSE.txt",
   "repository": {
     "type": "git",
