@@ -9,7 +9,7 @@
     "url": "https://github.com/dashengyeah/vscode-go-work-manager"
   },
   "publisher": "dashengyeah",
-  "homepage": "https://github.com/dashengyeah/vscode-go-work-manager",
+  "homepage": "https://github.com/dashengyeah",
   "bugs": {
     "url": "https://github.com/dashengyeah/vscode-go-work-manager/issues",
     "email": "dashengyeah@hotmail.com"
@@ -31,23 +31,18 @@
   "contributes": {
     "commands": [
       {
-        "command": "vscode-go-work-manager.hello",
-        "title": "Hello go.work",
-        "category": "Go Work"
-      },
-      {
         "command": "vscode-go-work-manager.addUse",
-        "title": "add use manually",
+        "title": "add use module manually",
         "category": "Go Work"
       },
       {
         "command": "vscode-go-work-manager.dropUse",
-        "title": "drop use manually",
+        "title": "drop use module manually",
         "category": "Go Work"
       },
       {
-        "command": "vscode-go-work-manager.toggleItem",
-        "title": "toggle use or drop",
+        "command": "vscode-go-work-manager.toggleMod",
+        "title": "toggle use or drop module",
         "category": "Go Work",
         "icon": {
           "light": "media/light/toggle.svg",
@@ -75,7 +70,7 @@
     "menus": {
       "view/item/context": [
         {
-          "command": "vscode-go-work-manager.toggleItem",
+          "command": "vscode-go-work-manager.toggleMod",
           "when": "view == goWorkManager && viewItem == goModItem",
           "group": "inline"
         }
@@ -118,5 +113,8 @@
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
     "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "lookpath": "^1.2.2"
   }
 }

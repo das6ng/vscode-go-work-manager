@@ -17,12 +17,17 @@ export class GoWorkProvider implements vscode.TreeDataProvider<GoWorkItem> {
     }
 
     getChildren(element?: GoWorkItem | undefined): vscode.ProviderResult<GoWorkItem[]> {
-        if (element || !this.bridge.check()) {
+        if (element || !this.bridge.isInGoWork()) {
             return Promise.resolve([]);
         }
 
+        const info = this.bridge.getInfo();
+        if (!info) {
+            return [];
+        }
+
         let ret: GoWorkItem[] = [];
-        this.bridge.getInfo().mods.forEach(v => {
+        info.mods.forEach(v => {
             ret.push(new GoWorkItem(v.path, v.used));
         });
         return Promise.resolve(ret);

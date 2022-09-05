@@ -4,20 +4,15 @@ import { GoWorkItem, GoWorkProvider } from './provider';
 
 const cacheBridgeKey = "workman-bridge";
 
-export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscode-go-work-manager" is now active!');
-
-	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.hello', () => {
-		vscode.window.showInformationMessage('Hello from vscode-go-work-manager!');
-	}));
+export async function activate(context: vscode.ExtensionContext) {
 
 	// build our workman command bridge.
 	const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
 		? vscode.workspace.workspaceFolders[0].uri.fsPath : ".";
 	let bridge = new Bridge(rootPath);
+
+	const ok = await bridge.checkOrInstallTools();
+
 	bridge.reload();
 	context.globalState.update(cacheBridgeKey, bridge);
 	let provider = new GoWorkProvider(bridge);
@@ -27,8 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 		provider
 	);
 
-
-	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.toggleItem', (item: GoWorkItem) => {
+	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.toggleMod', (item: GoWorkItem) => {
 		let ret = bridge.toggle(item.name) ?? `go.work: toggle ${item.name}`;
 		vscode.window.showInformationMessage(ret);
 		bridge.reload();
@@ -38,8 +32,12 @@ export function activate(context: vscode.ExtensionContext) {
 		bridge.reload();
 		provider.refresh();
 	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.addUse', async () => {
 		const info = bridge.getInfo();
+		if (!info) {
+			return;
+		}
 		const result = await vscode.window.showInputBox({
 			value: '',
 			placeHolder: `add use module to '${info.path}'`,
@@ -61,9 +59,12 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 	context.subscriptions.push(vscode.commands.registerCommand('vscode-go-work-manager.dropUse', async () => {
 		const info = bridge.getInfo();
+		if (!info) {
+			return;
+		}
 		const result = await vscode.window.showInputBox({
 			value: '',
-			placeHolder: `drop use module from '${bridge.getInfo().path}'`,
+			placeHolder: `drop use module from '${info.path}'`,
 		});
 		let ok = false;
 		let to: string[] = [];
